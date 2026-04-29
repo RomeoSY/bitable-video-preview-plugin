@@ -35,6 +35,11 @@ npm run build:feishu
 
 该命令会在构建完成后强校验 `dist/index.html` 是否存在且为 HTML 文档，不满足则直接报错。
 
+### 代理地址配置
+
+- 链接视频（非附件直链）默认通过 `https://tborders.befriends.com.cn:18174/video-proxy` 转发。
+- 可通过环境变量 `VITE_VIDEO_PROXY_BASE` 覆盖代理基地址（例如测试环境）。
+
 ## 接入说明（飞书多维表格）
 
 1. 在飞书开放平台创建多维表格扩展（侧边栏类型）。

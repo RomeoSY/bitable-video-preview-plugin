@@ -27,6 +27,8 @@ const VIDEO_EXTENSIONS = new Set([
     'm3u8',
 ]);
 
+const DEFAULT_PROXY_BASE = 'https://tborders.befriends.com.cn:18174';
+
 function isAttachmentArray(value: unknown): value is IOpenAttachment[] {
     return Array.isArray(value) && value.every((item) => !!item && typeof item === 'object' && 'token' in item);
 }
@@ -128,8 +130,9 @@ function getUrlFileName(url: string): string {
 }
 
 function getPlayableSrc(item: VideoItem): string {
-    if (item.source === "url") {
-        return `/video-proxy?url=${encodeURIComponent(item.url)}`;
+    if (item.source === 'url') {
+        const proxyBase = (import.meta.env.VITE_VIDEO_PROXY_BASE || DEFAULT_PROXY_BASE).replace(/\/+$/, '');
+        return `${proxyBase}/video-proxy?url=${encodeURIComponent(item.url)}`;
     }
     return item.url;
 }
@@ -144,7 +147,7 @@ function App() {
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     const activeVideo = useMemo(() => videos[activeVideoIndex] ?? null, [videos, activeVideoIndex]);
-    const activeVideoSrc = useMemo(() => (activeVideo ? getPlayableSrc(activeVideo) : ""), [activeVideo]);
+    const activeVideoSrc = useMemo(() => (activeVideo ? getPlayableSrc(activeVideo) : ''), [activeVideo]);
 
     const loadPreviewBySelection = async (nextSelection: SelectionState): Promise<void> => {
         const currentRequestId = ++requestIdRef.current;

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import unquote, urlparse
 
 import requests
 
@@ -62,8 +62,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_error(404, "Not Found")
             return
 
-        query = parse_qs(parsed.query)
-        target = (query.get("url") or [""])[0]
+        target = self._extract_target_url(parsed.query)
         target_parsed = urlparse(target)
         if target_parsed.scheme not in {"http", "https"} or not target_parsed.hostname:
             self.send_error(400, "Invalid url")
@@ -115,6 +114,26 @@ class Handler(BaseHTTPRequestHandler):
                             self.wfile.write(chunk)
         except requests.RequestException as exc:
             self.send_error(502, f"Proxy upstream error: {exc.__class__.__name__}")
+
+    @staticmethod
+    def _extract_target_url(raw_query: str) -> str:
+        """
+        Parse target URL from query string without converting '+' into spaces.
+        """
+        if not raw_query:
+            return ""
+
+        for pair in raw_query.split("&"):
+            if not pair:
+                continue
+            key, sep, value = pair.partition("=")
+            if key != "url":
+                continue
+            if not sep:
+                return ""
+            # Use unquote (not unquote_plus) to keep '+' untouched.
+            return unquote(value)
+        return ""
 
 
 def main() -> int:
