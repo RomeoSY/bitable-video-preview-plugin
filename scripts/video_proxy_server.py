@@ -12,6 +12,8 @@ ALLOWED_HOST_SUFFIXES = (
     ".byteimg.com",
     ".douyinvod.com",
     ".toutiaoimg.com",
+    # 阿里云 OSS 公网 Endpoint（如 *.oss-cn-*.aliyuncs.com）
+    ".aliyuncs.com",
 )
 
 PASS_HEADERS = (

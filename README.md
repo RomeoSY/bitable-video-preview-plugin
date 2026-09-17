@@ -39,6 +39,7 @@ npm run build:feishu
 
 - 链接视频（非附件直链）默认通过 `https://tborders.befriends.com.cn:18174/video-proxy` 转发。
 - 可通过环境变量 `VITE_VIDEO_PROXY_BASE` 覆盖代理基地址（例如测试环境）。
+- 服务端 `scripts/video_proxy_server.py` 仅允许转发白名单域名（字节系 CDN + **阿里云 OSS `*.aliyuncs.com`** 等）。修改白名单后需重新部署代理进程方可生效。
 
 ## 接入说明（飞书多维表格）
 
